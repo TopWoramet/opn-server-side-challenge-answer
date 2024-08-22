@@ -9,7 +9,7 @@ import {
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './strategies/local-auth.guard';
 import { AuthenticatedRequestDto } from './dto/authenticated-request.dto';
-import { RegisterDto } from './dto/register.dto';
+import { RegisterUserDto } from './dto/register-user.dto';
 import { JwtAuthGuard } from './strategies/jwt-auth.guard';
 import { ChangePasswordDto } from './dto/change-password.dto';
 
@@ -18,7 +18,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  register(@Body() body: RegisterDto) {
+  register(@Body() body: RegisterUserDto) {
     return this.authService.register(body);
   }
 

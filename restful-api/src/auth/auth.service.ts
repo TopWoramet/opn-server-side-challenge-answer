@@ -8,7 +8,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { AuthenticatedUser } from './dto/authenticated-request.dto';
 import { v4 as uuidv4 } from 'uuid';
-import { RegisterDto } from './dto/register.dto';
+import { RegisterUserDto } from './dto/register-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async register({ password, ...rest }: RegisterDto) {
+  async register({ password, ...rest }: RegisterUserDto) {
     const isEmailExists = this.userService.emailExists(rest.email);
     if (isEmailExists) {
       throw new BadRequestException('Email exists');

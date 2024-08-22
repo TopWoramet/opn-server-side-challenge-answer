@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { UpdateDto } from './dto/update.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import dayjs from 'dayjs';
 
 export enum Gender {
@@ -56,7 +56,7 @@ export class UserService {
     this.users.push(user);
   }
 
-  updateUser(id: string, body: UpdateDto): User {
+  updateUser(id: string, body: UpdateUserDto): User {
     const user = this.users.find((user) => user.id === id);
     if (!user) {
       throw new NotFoundException('User not found');

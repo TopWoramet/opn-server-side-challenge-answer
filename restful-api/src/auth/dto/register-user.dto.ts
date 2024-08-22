@@ -11,7 +11,7 @@ import {
 import dayjs from 'dayjs';
 import { Gender } from 'src/user/user.service';
 
-export class RegisterDto {
+export class RegisterUserDto {
   @IsNotEmpty()
   @IsString()
   name: string;

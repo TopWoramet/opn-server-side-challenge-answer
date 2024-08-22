@@ -10,7 +10,7 @@ import {
 import { UserService } from './user.service';
 import { JwtAuthGuard } from 'src/auth/strategies/jwt-auth.guard';
 import { AuthenticatedRequestDto } from 'src/auth/dto/authenticated-request.dto';
-import { UpdateDto } from './dto/update.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UserController {
@@ -24,7 +24,7 @@ export class UserController {
 
   @Put()
   @UseGuards(JwtAuthGuard)
-  update(@Request() req: AuthenticatedRequestDto, @Body() body: UpdateDto) {
+  update(@Request() req: AuthenticatedRequestDto, @Body() body: UpdateUserDto) {
     return this.userService.updateUser(req.user.id, body);
   }
 
