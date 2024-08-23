@@ -32,7 +32,7 @@ export class AuthController {
   @Post('change-password')
   @HttpCode(200)
   @UseGuards(JwtAuthGuard)
-  passwordChange(
+  changePassword(
     @Request() req: AuthenticatedRequestDto,
     @Body() body: ChangePasswordDto,
   ) {

@@ -51,19 +51,12 @@ export class AuthService {
     email: string,
     password: string,
   ): Promise<Pick<User, 'email' | 'id'>> {
-    const user = this.userService.findByEmail(email);
-    if (!user || !(await this.comparePasswords(password, user.password))) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
+    const user = await this.validateUserCredentials(email, password);
     return { email: user.email, id: user.id };
   }
 
   async changePassword(email: string, body: ChangePasswordDto) {
-    const user = this.userService.findByEmail(email);
-    if (!user || !(await this.comparePasswords(body.password, user.password))) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
-
+    const user = await this.validateUserCredentials(email, body.password);
     const hashedNewPassword = await this.hashPassword(body.newPassword);
     const isSameAsCurrentPassword = await this.comparePasswords(
       body.newPassword,
@@ -79,6 +72,17 @@ export class AuthService {
     user.updatedAt = new Date();
 
     return { ...user, password: undefined };
+  }
+
+  private async validateUserCredentials(
+    email: string,
+    password: string,
+  ): Promise<User> {
+    const user = this.userService.findByEmail(email);
+    if (!user || !(await this.comparePasswords(password, user.password))) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+    return user;
   }
 
   private async hashPassword(password: string) {
