@@ -21,8 +21,8 @@ export interface FreebieReward {
 
 const PRICE_PER_PIECE = 100;
 
-export class CartService {
-  private static carts: Map<string, CartService> = new Map();
+export class Cart {
+  private static carts: Map<string, Cart> = new Map();
 
   private customerId: string;
   private items: Map<string, CartItem> = new Map();
@@ -32,17 +32,15 @@ export class CartService {
     { condition: FreebieCondition; reward: FreebieReward }
   > = new Map();
 
-  constructor(customerId: string) {
+  private constructor(customerId: string) {
     this.customerId = customerId;
   }
 
-  static create(customerId: string): CartService {
-    if (this.carts.has(customerId)) {
-      return this.carts.get(customerId)!;
+  static create(customerId: string): Cart {
+    if (!this.carts.has(customerId)) {
+      this.carts.set(customerId, new Cart(customerId));
     }
-    const cart = new CartService(customerId);
-    this.carts.set(customerId, cart);
-    return cart;
+    return this.carts.get(customerId)!;
   }
 
   has(productId: string): boolean {
@@ -67,6 +65,12 @@ export class CartService {
       0
     );
 
+    total = this.applyDiscounts(total);
+
+    return total;
+  }
+
+  private applyDiscounts(total: number): number {
     this.discounts.forEach((discount) => {
       if (discount.type === "percentage") {
         let discountValue = (total * discount.amount) / 100;
@@ -78,7 +82,6 @@ export class CartService {
         total -= discount.amount;
       }
     });
-
     return total;
   }
 
@@ -91,10 +94,7 @@ export class CartService {
   }
 
   add(productId: string, quantity: number): void {
-    if (quantity <= 0) {
-      throw new Error("Quantity must be greater than 0.");
-    }
-
+    this.validateQuantity(quantity);
     const item = this.items.get(productId);
     if (item) {
       item.quantity += quantity;
@@ -105,7 +105,7 @@ export class CartService {
 
   update(productId: string, quantity: number): void {
     if (quantity <= 0) {
-      this.items.delete(productId);
+      this.remove(productId);
     } else {
       this.items.set(productId, { productId, quantity });
     }
@@ -116,7 +116,7 @@ export class CartService {
   }
 
   destroy(): void {
-    CartService.carts.delete(this.customerId);
+    Cart.carts.delete(this.customerId);
   }
 
   addFreebie(
@@ -124,12 +124,15 @@ export class CartService {
     condition: FreebieCondition,
     reward: FreebieReward
   ): void {
-    if (reward.quantity <= 0) {
-      throw new Error("Quantity must be greater than 0.");
-    }
-
+    this.validateQuantity(reward.quantity);
     this.freebies.set(name, { condition, reward });
+    this.applyFreebie(condition, reward);
+  }
 
+  private applyFreebie(
+    condition: FreebieCondition,
+    reward: FreebieReward
+  ): void {
     if (condition.type === "contains" && this.has(condition.productId)) {
       const rewardItem = this.items.get(reward.productId);
       if (rewardItem) {
@@ -140,6 +143,12 @@ export class CartService {
           quantity: reward.quantity,
         });
       }
+    }
+  }
+
+  private validateQuantity(quantity: number): void {
+    if (quantity <= 0) {
+      throw new Error("Quantity must be greater than 0.");
     }
   }
 }
