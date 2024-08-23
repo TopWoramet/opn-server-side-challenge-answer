@@ -2,7 +2,7 @@
 
 ### Prerequisites
 
-- node >= 20
+- [Node.js](https://nodejs.org/) >= 20
 
 ### 1. RESTful API
 
