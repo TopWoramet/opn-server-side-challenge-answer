@@ -36,14 +36,16 @@ describe("Cart service testing", () => {
       cart.add("product_1", 100);
       cart.remove("product_1");
       expect(cart.isEmpty()).toBeTruthy();
+      expect(cart.has("product_1")).toBeFalsy();
       cart.destroy();
     });
 
-    test("clears the cart", () => {
+    test("removes a product from the cart when its quantity is updated to 0", () => {
       const cart = Cart.create("customer_1");
       cart.add("product_1", 500);
       cart.update("product_1", 0);
       expect(cart.isEmpty()).toBeTruthy();
+      expect(cart.has("product_1")).toBeFalsy();
       cart.destroy();
     });
   });

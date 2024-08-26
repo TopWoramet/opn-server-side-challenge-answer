@@ -105,6 +105,12 @@ export class Cart {
   }
 
   update(productId: string, quantity: number): void {
+    if (!this.items.has(productId)) {
+      throw new Error(
+        `Product with ID ${productId} does not exist in the cart`
+      );
+    }
+
     if (quantity <= 0) {
       this.remove(productId);
     } else {
