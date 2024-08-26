@@ -81,6 +81,7 @@ export class Cart {
       } else if (discount.type === "fixed") {
         total -= discount.amount;
       }
+      total = parseFloat(total.toFixed(2));
     });
     return total;
   }

@@ -23,7 +23,7 @@ npm run start:dev
 ```sh
 cd coding
 npm i
-npm run dev
+npm run test
 ```
 
 - Testing can be performed using the `coding/index.ts` file
