@@ -26,4 +26,4 @@ npm i
 npm run test
 ```
 
-- Testing can be performed using the `coding/index.ts` file
+- Testing can be performed using the `coding/cart.spec.ts` file
